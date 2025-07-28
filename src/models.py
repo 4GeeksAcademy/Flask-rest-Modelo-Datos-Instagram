@@ -17,7 +17,9 @@ class User(db.Model):
     lastname: Mapped[str] = mapped_column(String(120))
     email: Mapped[str] = mapped_column(String(120), unique=True, nullable=False)
     password: Mapped[str] = mapped_column(nullable=False)
+    # Relacionando las tablas
     posts = relationship("Post", back_populates="user")
+    
 
     def serialize(self):
         return {
@@ -32,12 +34,13 @@ class User(db.Model):
 # Follower se trae la id de User y da información a User
 class Follower(db.Model):
     id: Mapped[int] = mapped_column(primary_key=True)
+    # Relacionando las tablas
     user_from_id: Mapped[int] = mapped_column(ForeignKey("user.id"))
     user_to_id: Mapped[int] = mapped_column(ForeignKey("user.id"))
 
     def serialize(self):
         return {
-            "user_origin_id": self.user_from_id,
+            "user_from_id": self.user_from_id,
             "user_to_id": self.user_to_id,
         }
     
@@ -46,6 +49,7 @@ class Media(db.Model):
     id: Mapped[int] = mapped_column(primary_key=True)
     type: Mapped[Type] = mapped_column(Enum(Type), nullable=False)
     url: Mapped[str] = mapped_column(String(120))
+    # Relacionando las tablas
     post_id: Mapped[int] = mapped_column(ForeignKey("post.id"))
 
     def serialize(self):
@@ -59,6 +63,7 @@ class Media(db.Model):
 # Post se trae la id de User y da información a Media y Comment
 class Post(db.Model):
     id: Mapped[int] = mapped_column(primary_key=True)
+    # Relacionando las tablas
     user_id: Mapped[int] = mapped_column(ForeignKey("user.id"))
     user = relationship("User", back_populates="posts")
 
@@ -72,6 +77,7 @@ class Post(db.Model):
 class Comment(db.Model):
     id: Mapped[int] = mapped_column(primary_key=True)
     comment_text: Mapped[str] = mapped_column(String(120))
+    # Relacionando las tablas
     author_id: Mapped[int] = mapped_column(ForeignKey("user.id"))
     post_id: Mapped[int] = mapped_column(ForeignKey("post.id"))
 
